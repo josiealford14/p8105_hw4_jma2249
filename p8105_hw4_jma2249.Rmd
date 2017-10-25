@@ -4,8 +4,52 @@ author: "Josie Alford"
 date: "10/30/2017"
 output: html_document
 ---
+```{r Load Packages, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(haven)
+library(janitor)
+library(dplyr)
+library(lubridate)
+```
+
 #Problem Two
-```{r}
+```{r Dem & GOP, warning = FALSE, message = FALSE}
+#Read and Clean data in pols-month.csv
+politicians_data = read_csv("./data/fivethirtyeight_datasets/pols-month.csv") %>%
+  clean_names() %>%
+  mutate(mon = floor_date(mon, "month")) %>%
+  separate(mon, into = c("year", "month", "day"), convert = TRUE) %>%
+  mutate(month = month.name[month]) %>%
+  rename(gop = prez_gop, dem = prez_dem) %>%
+  mutate(gop = replace(gop, gop == 2, 1)) %>%
+  mutate(president = recode(gop, '0' = "dem", '1' = "gop")) %>% 
+  select(-dem, -gop, -day)
+politicians_data #Loaded and Tidied
+```
+
+```{r GDP, warning = FALSE, message = FALSE}
+gdp_data = read_csv("./data/fivethirtyeight_datasets/GDP.csv") %>%
+  clean_names() %>%
+  mutate(date = floor_date(date, "month")) %>%
+  separate(date, into = c("year", "month", "day"), convert = TRUE) %>%
+  mutate(month = month.name[month]) %>%
+  select(-day)%>%
+  rename(gdp = value)
+gdp_data #Loaded and Tidied
+```
+
+```{r Join Datasets, warning = FALSE, message = FALSE}
+combined_538 = left_join(politicians_data, gdp_data)
+combined_538
+```
+
+#Collaborator: MeOak!
+```{r Plot of GDP & Presidential Party Overtime, warning = FALSE, message = FALSE}
 
 ```
+
+#Final Analysis of Results: Josie
+
+
+
 
