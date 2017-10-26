@@ -35,21 +35,22 @@ gdp_data = read_csv("./data/fivethirtyeight_datasets/GDP.csv") %>%
   mutate(month = month.name[month]) %>%
   select(-day)%>%
   rename(gdp = value) %>%
-  filter(!is.na(gdp))
+  mutate(gdp = as.numeric(gdp))
 gdp_data #Loaded and Tidied
 ```
 
 ```{r Join Datasets, warning = FALSE, message = FALSE}
 combined_538 = left_join(politicians_data, gdp_data)
-plot = combined_538
-plot %>%
-  filter(!is.na())
+plot = combined_538 %>% filter(!is.na(gdp)) #filtering out NAs for GDP
 plot
 ```
 
-```{r}
-
-
+```{r Quarterly GDP}
+quarterly_538 = plot %>%
+  mutate(quarter = recode(month, "January" = "Q1", "April" = "Q2", "July" = "Q3", "October" = "Q4")) %>%
+  select(-month) %>%
+  unite(quarterly_gdp, c(year, quarter))
+quarterly_538
 ```
 
 #Collaborator: MeOak!

@@ -163,15 +163,15 @@ politicians_data #Loaded and Tidied</code></pre>
   mutate(month = month.name[month]) %&gt;%
   select(-day)%&gt;%
   rename(gdp = value) %&gt;%
-  filter(!is.na(gdp)) 
+  mutate(gdp = as.numeric(gdp))
 gdp_data #Loaded and Tidied</code></pre>
 <pre><code>## # A tibble: 273 x 3
 ##     year   month      gdp
-##    &lt;int&gt;   &lt;chr&gt;    &lt;chr&gt;
-##  1  1947 January        .
-##  2  1947   April        .
-##  3  1947    July        .
-##  4  1947 October        .
+##    &lt;int&gt;   &lt;chr&gt;    &lt;dbl&gt;
+##  1  1947 January       NA
+##  2  1947   April       NA
+##  3  1947    July       NA
+##  4  1947 October       NA
 ##  5  1948 January  9.50226
 ##  6  1948   April 10.79984
 ##  7  1948    July 11.75530
@@ -180,22 +180,41 @@ gdp_data #Loaded and Tidied</code></pre>
 ## 10  1949   April -0.43972
 ## # ... with 263 more rows</code></pre>
 <pre class="r"><code>combined_538 = left_join(politicians_data, gdp_data)
-plot_538 = combined_538
-plot_538</code></pre>
-<pre><code>## # A tibble: 822 x 4
-##     year     month president   gdp
-##    &lt;int&gt;     &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;
-##  1  1947   January       dem     .
-##  2  1947  February       dem  &lt;NA&gt;
-##  3  1947     March       dem  &lt;NA&gt;
-##  4  1947     April       dem     .
-##  5  1947       May       dem  &lt;NA&gt;
-##  6  1947      June       dem  &lt;NA&gt;
-##  7  1947      July       dem     .
-##  8  1947    August       dem  &lt;NA&gt;
-##  9  1947 September       dem  &lt;NA&gt;
-## 10  1947   October       dem     .
-## # ... with 812 more rows</code></pre>
+plot = combined_538 %&gt;% filter(!is.na(gdp)) #filtering out NAs for GDP
+plot</code></pre>
+<pre><code>## # A tibble: 269 x 4
+##     year   month president      gdp
+##    &lt;int&gt;   &lt;chr&gt;     &lt;chr&gt;    &lt;dbl&gt;
+##  1  1948 January       dem  9.50226
+##  2  1948   April       dem 10.79984
+##  3  1948    July       dem 11.75530
+##  4  1948 October       dem  7.83711
+##  5  1949 January       dem  3.45605
+##  6  1949   April       dem -0.43972
+##  7  1949    July       dem -2.21825
+##  8  1949 October       dem -3.45565
+##  9  1950 January       dem  2.10603
+## 10  1950   April       dem  6.99301
+## # ... with 259 more rows</code></pre>
+<pre class="r"><code>quarterly_538 = plot %&gt;%
+  mutate(quarter = recode(month, &quot;January&quot; = &quot;Q1&quot;, &quot;April&quot; = &quot;Q2&quot;, &quot;July&quot; = &quot;Q3&quot;, &quot;October&quot; = &quot;Q4&quot;)) %&gt;%
+  select(-month) %&gt;%
+  unite(quarterly_gdp, c(year, quarter))
+quarterly_538</code></pre>
+<pre><code>## # A tibble: 269 x 3
+##    quarterly_gdp president      gdp
+##  *         &lt;chr&gt;     &lt;chr&gt;    &lt;dbl&gt;
+##  1       1948_Q1       dem  9.50226
+##  2       1948_Q2       dem 10.79984
+##  3       1948_Q3       dem 11.75530
+##  4       1948_Q4       dem  7.83711
+##  5       1949_Q1       dem  3.45605
+##  6       1949_Q2       dem -0.43972
+##  7       1949_Q3       dem -2.21825
+##  8       1949_Q4       dem -3.45565
+##  9       1950_Q1       dem  2.10603
+## 10       1950_Q2       dem  6.99301
+## # ... with 259 more rows</code></pre>
 </div>
 <div id="collaborator-meoak" class="section level1">
 <h1>Collaborator: MeOak!</h1>
