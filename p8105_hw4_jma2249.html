@@ -140,29 +140,30 @@ politicians_data = read_csv(&quot;./data/fivethirtyeight_datasets/pols-month.csv
   rename(gop = prez_gop, dem = prez_dem) %&gt;%
   mutate(gop = replace(gop, gop == 2, 1)) %&gt;%
   mutate(president = recode(gop, '0' = &quot;dem&quot;, '1' = &quot;gop&quot;)) %&gt;% 
-  select(-dem, -gop, -day)
+  select(-dem, -gop, -day, -gov_gop, -gov_dem, -sen_gop, -sen_dem, -rep_dem, -rep_gop)
 politicians_data #Loaded and Tidied</code></pre>
-<pre><code>## # A tibble: 822 x 9
-##     year     month gov_gop sen_gop rep_gop gov_dem sen_dem rep_dem
-##    &lt;int&gt;     &lt;chr&gt;   &lt;int&gt;   &lt;int&gt;   &lt;int&gt;   &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
-##  1  1947   January      23      51     253      23      45     198
-##  2  1947  February      23      51     253      23      45     198
-##  3  1947     March      23      51     253      23      45     198
-##  4  1947     April      23      51     253      23      45     198
-##  5  1947       May      23      51     253      23      45     198
-##  6  1947      June      23      51     253      23      45     198
-##  7  1947      July      23      51     253      23      45     198
-##  8  1947    August      23      51     253      23      45     198
-##  9  1947 September      23      51     253      23      45     198
-## 10  1947   October      23      51     253      23      45     198
-## # ... with 812 more rows, and 1 more variables: president &lt;chr&gt;</code></pre>
+<pre><code>## # A tibble: 822 x 3
+##     year     month president
+##    &lt;int&gt;     &lt;chr&gt;     &lt;chr&gt;
+##  1  1947   January       dem
+##  2  1947  February       dem
+##  3  1947     March       dem
+##  4  1947     April       dem
+##  5  1947       May       dem
+##  6  1947      June       dem
+##  7  1947      July       dem
+##  8  1947    August       dem
+##  9  1947 September       dem
+## 10  1947   October       dem
+## # ... with 812 more rows</code></pre>
 <pre class="r"><code>gdp_data = read_csv(&quot;./data/fivethirtyeight_datasets/GDP.csv&quot;) %&gt;%
   clean_names() %&gt;%
   mutate(date = floor_date(date, &quot;month&quot;)) %&gt;%
   separate(date, into = c(&quot;year&quot;, &quot;month&quot;, &quot;day&quot;), convert = TRUE) %&gt;%
   mutate(month = month.name[month]) %&gt;%
   select(-day)%&gt;%
-  rename(gdp = value)
+  rename(gdp = value) %&gt;%
+  filter(!is.na(gdp)) 
 gdp_data #Loaded and Tidied</code></pre>
 <pre><code>## # A tibble: 273 x 3
 ##     year   month      gdp
@@ -179,24 +180,28 @@ gdp_data #Loaded and Tidied</code></pre>
 ## 10  1949   April -0.43972
 ## # ... with 263 more rows</code></pre>
 <pre class="r"><code>combined_538 = left_join(politicians_data, gdp_data)
-combined_538</code></pre>
-<pre><code>## # A tibble: 822 x 10
-##     year     month gov_gop sen_gop rep_gop gov_dem sen_dem rep_dem
-##    &lt;int&gt;     &lt;chr&gt;   &lt;int&gt;   &lt;int&gt;   &lt;int&gt;   &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
-##  1  1947   January      23      51     253      23      45     198
-##  2  1947  February      23      51     253      23      45     198
-##  3  1947     March      23      51     253      23      45     198
-##  4  1947     April      23      51     253      23      45     198
-##  5  1947       May      23      51     253      23      45     198
-##  6  1947      June      23      51     253      23      45     198
-##  7  1947      July      23      51     253      23      45     198
-##  8  1947    August      23      51     253      23      45     198
-##  9  1947 September      23      51     253      23      45     198
-## 10  1947   October      23      51     253      23      45     198
-## # ... with 812 more rows, and 2 more variables: president &lt;chr&gt;, gdp &lt;chr&gt;</code></pre>
+plot_538 = combined_538
+plot_538</code></pre>
+<pre><code>## # A tibble: 822 x 4
+##     year     month president   gdp
+##    &lt;int&gt;     &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;
+##  1  1947   January       dem     .
+##  2  1947  February       dem  &lt;NA&gt;
+##  3  1947     March       dem  &lt;NA&gt;
+##  4  1947     April       dem     .
+##  5  1947       May       dem  &lt;NA&gt;
+##  6  1947      June       dem  &lt;NA&gt;
+##  7  1947      July       dem     .
+##  8  1947    August       dem  &lt;NA&gt;
+##  9  1947 September       dem  &lt;NA&gt;
+## 10  1947   October       dem     .
+## # ... with 812 more rows</code></pre>
 </div>
 <div id="collaborator-meoak" class="section level1">
 <h1>Collaborator: MeOak!</h1>
+</div>
+<div id="final-analysis-of-results-josie" class="section level1">
+<h1>Final Analysis of Results: Josie</h1>
 </div>
 
 

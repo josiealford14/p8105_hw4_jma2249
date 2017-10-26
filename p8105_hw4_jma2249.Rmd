@@ -23,7 +23,7 @@ politicians_data = read_csv("./data/fivethirtyeight_datasets/pols-month.csv") %>
   rename(gop = prez_gop, dem = prez_dem) %>%
   mutate(gop = replace(gop, gop == 2, 1)) %>%
   mutate(president = recode(gop, '0' = "dem", '1' = "gop")) %>% 
-  select(-dem, -gop, -day)
+  select(-dem, -gop, -day, -gov_gop, -gov_dem, -sen_gop, -sen_dem, -rep_dem, -rep_gop)
 politicians_data #Loaded and Tidied
 ```
 
@@ -34,13 +34,22 @@ gdp_data = read_csv("./data/fivethirtyeight_datasets/GDP.csv") %>%
   separate(date, into = c("year", "month", "day"), convert = TRUE) %>%
   mutate(month = month.name[month]) %>%
   select(-day)%>%
-  rename(gdp = value)
+  rename(gdp = value) %>%
+  filter(!is.na(gdp))
 gdp_data #Loaded and Tidied
 ```
 
 ```{r Join Datasets, warning = FALSE, message = FALSE}
 combined_538 = left_join(politicians_data, gdp_data)
-combined_538
+plot = combined_538
+plot %>%
+  filter(!is.na())
+plot
+```
+
+```{r}
+
+
 ```
 
 #Collaborator: MeOak!
