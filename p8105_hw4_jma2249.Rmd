@@ -9,6 +9,7 @@ library(tidyverse)
 library(haven)
 library(janitor)
 library(dplyr)
+library(ggplot2)
 library(lubridate)
 ```
 
@@ -39,27 +40,31 @@ gdp_data = read_csv("./data/fivethirtyeight_datasets/GDP.csv") %>%
 gdp_data #Loaded and Tidied
 ```
 
-```{r Join Datasets, warning = FALSE, message = FALSE}
-combined_538 = left_join(politicians_data, gdp_data)
-plot = combined_538 %>% filter(!is.na(gdp)) #filtering out NAs for GDP
-plot
-```
 
-```{r Quarterly GDP}
-quarterly_538 = plot %>%
-  mutate(quarter = recode(month, "January" = "Q1", "April" = "Q2", "July" = "Q3", "October" = "Q4")) %>%
-  select(-month) %>%
-  unite(quarterly_gdp, c(year, quarter))
-quarterly_538
+```{r Join Datasets, warning = FALSE, message = FALSE}
+combined_538 = gdp_data %>% 
+  left_join(politicians_data) %>% 
+  filter(!is.na(gdp)) %>% 
+  mutate(
+    quarter = recode(month, January = "Q1", April = "Q2", July = "Q3", October = "Q4")
+    ) %>% 
+  select(-month) %>% 
+  unite(qtr, c(year, quarter))
+combined_538
 ```
 
 #Collaborator: MeOak!
 ```{r Plot of GDP & Presidential Party Overtime, warning = FALSE, message = FALSE}
+###############
+#For your reference, here are a couple of links to ones in "real life" :) Take your pick xx https://www.bea.gov/newsreleases/national/gdp/gdp_glance.htm and https://data.oecd.org/gdp/real-gdp-forecast.htm#indicator-chart
+##############
 
+
+##############
+#bar plot
+##############
+combined_538 %>% 
+  ggplot(aes(x = qtr, y = gdp, fill = president)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values=c("blue", "red")) 
 ```
-
-#Final Analysis of Results: Josie
-
-
-
-
