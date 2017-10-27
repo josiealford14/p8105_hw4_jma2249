@@ -49,7 +49,7 @@ combined_538 = gdp_data %>%
     quarter = recode(month, January = "Q1", April = "Q2", July = "Q3", October = "Q4")
     ) %>% 
   select(-month) %>% 
-  unite(qtr, c(year, quarter))
+  unite(qtr, c(year, quarter)) #this only includes observations with gdp values. gdp is a quarterly variable
 combined_538
 ```
 
@@ -68,3 +68,8 @@ combined_538 %>%
   geom_bar(stat = "identity") +
   scale_fill_manual(values=c("blue", "red")) 
 ```
+
+#Final Analysis & Results by Josie Alford
+The goal of this collaboration is to analyze the relationship between quarterly GDP and presidential party. Political party and GDP data were imported from Nate Silver's FiveThirtyEight. Both datasets were loaded and tidied using techniques from class. The final dataset contains 3 variables: qtr (quarter and year), gdp (GDP value for each quarter), and president (presidential party during that period). There is a total of `r nrow(combined_538)` observations. Examining the bar plot curated by MeOak Place, we see that over time (years in terms of quarters) GDP values have decreased. 
+
+There is no clear trend over time regarding the relationship between presidential party and GDP. GDP reaches it height during Harry S. Truman's (D) administration (post WWII economic boost). Later during the 70s there is a peak during Jimmy Carter's (D) administration. During Ronald Reagan's (R) administration there is a sharp decline and sharp increase. Since George H.W. Bush's (R) administration, GDP values have a constant trend, except during the Great Recession (end of George W. Bush's (R) and beginning of Barack Obama's (D) administrations). I conclude that there is a weak association between GDP values and presidential party. 
